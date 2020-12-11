@@ -13,28 +13,17 @@ app.use(express.json())
 
 
 const uri = process.env.ATLAS_URI
-mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true })
+mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true, useUnifiedTopology: true })
 
 const connection = mongoose.connection
 connection.once('open', () => {
     console.log('MongoDB database connection established successfully')
-})
+}).on('error', function(err) { console.log('Error', err) })
 
-const exerciseRouter = require('./routes/exercises')
-const userRouter = require('./routes/users')
+const sentimentRouter = require('./routes/sentiment')
 
-app.use('/exercises', exerciseRouter)
-app.use('/users', userRouter)
-
-// app.use(app.router)
-// exerciseRouter.initialize(app)
-//     // app.use('/users', userRouter)
+app.use('/sentiment', sentimentRouter)
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`)
 })
-
-
-
-// module.exports = exerciseRouter
-// module.exports = userRouter
